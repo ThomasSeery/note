@@ -8,7 +8,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 
 add_executable(core_test
-    core/core_test.cpp)
+    core/core_test.cpp
+    core/paths_test.cpp)
 
 target_link_libraries(core_test
     PRIVATE

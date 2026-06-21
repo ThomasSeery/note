@@ -1,33 +1,31 @@
 #include "core/paths.hpp"
 
 #include <cstdlib>
-#include <optional>
-
-namespace {
-
-std::optional<std::filesystem::path> env_path(const char* name) {
-    if (const char* v = std::getenv(name); v && *v) return std::filesystem::path{v};
-    return std::nullopt;
-}
-
-}  // namespace
 
 namespace note::paths {
 
-std::filesystem::path notes_file() {
-    static const auto path = []() {
-        std::filesystem::path base;
+std::filesystem::path resolve_notes_file(const environment& env) {
+    std::filesystem::path base;
 #if defined(_WIN32)
-        if (auto p = env_path("APPDATA")) base = *p;
+    if (env.appdata) base = *env.appdata;
 #elif defined(__APPLE__)
-        if (auto p = env_path("HOME")) base = *p / "Library" / "Application Support";
+    if (env.home) base = std::filesystem::path{*env.home} / "Library" / "Application Support";
 #else
-        if (auto p = env_path("XDG_DATA_HOME"))
-            base = *p;
-        else if (auto p = env_path("HOME"))
-            base = *p / ".local" / "share";
+    if (env.xdg_data_home)
+        base = *env.xdg_data_home;
+    else if (env.home)
+        base = std::filesystem::path{*env.home} / ".local" / "share";
 #endif
-        return base / "note" / "notes.txt";
+    return base / "note" / "notes.txt";
+}
+
+const std::filesystem::path& notes_file() {
+    static const std::filesystem::path path = [] {
+        environment env;
+        if (const char* v = std::getenv("APPDATA"); v && *v) env.appdata = v;
+        if (const char* v = std::getenv("HOME"); v && *v) env.home = v;
+        if (const char* v = std::getenv("XDG_DATA_HOME"); v && *v) env.xdg_data_home = v;
+        return resolve_notes_file(env);
     }();
     return path;
 }
