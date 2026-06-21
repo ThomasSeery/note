@@ -15,6 +15,7 @@ target_link_libraries(core_test
     PRIVATE
         note::core
         note_warnings
+        note_sanitize
         Catch2::Catch2WithMain)
 
 include(Catch)

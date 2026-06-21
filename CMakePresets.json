@@ -9,7 +9,7 @@
       "binaryDir": "${sourceDir}/build/dev",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_CXX_FLAGS": "-fsanitize=address,undefined -fno-omit-frame-pointer -g"
+        "NOTE_SANITIZE": "ON"
       }
     },
     {
@@ -21,13 +21,10 @@
     },
     {
       "name": "gdb",
-      "displayName": "GDB (debug, no sanitizers)",
+      "displayName": "Debug (no sanitizers)",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/gdb",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_CXX_FLAGS": "-g"
-      }
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
     }
   ],
   "buildPresets": [
